@@ -92,7 +92,7 @@ def point(x, y):
     penUp()
 
 def bezier(startx, starty, c1x, c1y, c2x, c2y, endx, endy, stepSize = 80):
-    steps = round(estimateBezierLength(startx, starty, c1x, c1y, c2x, c2y, endx, endy) / stepSize)
+    steps = round(_estimateBezierLength(startx, starty, c1x, c1y, c2x, c2y, endx, endy) / stepSize)
     penUp()
     set(startx, starty)
     penDown()
@@ -109,7 +109,7 @@ def bezier(startx, starty, c1x, c1y, c2x, c2y, endx, endy, stepSize = 80):
         set(x, y)
     penUp()
 
-def estimateBezierLength(startx, starty, c1x, c1y, c2x, c2y, endx, endy):
+def _estimateBezierLength(startx, starty, c1x, c1y, c2x, c2y, endx, endy):
     dist = 0
     for t in range(100):
         p = t/100
@@ -140,21 +140,21 @@ def polyline(points):
         set(px, py)
     penUp()
 
-def fillPolygon(boundary, holes=None, angle=0.0):
+def _fillPolygon(boundary, holes=None, angle=0.0):
     from shapely.geometry import Polygon
     _fillPolygonGeom(Polygon(boundary, holes or []), angle)
 
-def fillPolygonContour(boundary, holes=None):
+def _fillPolygonContour(boundary, holes=None):
     from shapely.geometry import Polygon
     _fillPolygonContourGeom(Polygon(boundary, holes or []))
 
 def _fillWith(boundary):
     global fillMode
     if fillMode == FILLMODE.CONTOUR:
-        fillPolygonContour(boundary)
+        _fillPolygonContour(boundary)
     elif fillMode == FILLMODE.LINE:
         global lineFillAngle
-        fillPolygon(boundary, None, lineFillAngle)
+        _fillPolygon(boundary, None, lineFillAngle)
 
 def arc(x, y, r, rads, stepSize = 40):
     rads = min(rads, 2 * math.pi)
