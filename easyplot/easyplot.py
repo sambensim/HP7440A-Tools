@@ -298,3 +298,10 @@ def setSpeed(cm_per_second : int):
     global instructions, currentDrawSpeed
     currentDrawSpeed = cm_per_second
     instructions.append("VS " + str(cm_per_second) + ";")
+
+def regularPolygon(x, y, radius, sides, rotation = 0):
+    pts = [(x + (math.cos(rotation)) * radius, y + (math.sin(rotation)) * radius)]
+    for i in range(sides):
+        theta = (((i + 1) * ((2 * math.pi) / sides) + rotation) / (2*math.pi))
+        pts.append((x + math.cos(theta * 2 * math.pi) * radius, y + math.sin(theta * 2 * math.pi) * radius))
+    return [[int(v) for v in p] for p in pts]
