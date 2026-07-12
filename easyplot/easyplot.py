@@ -11,6 +11,11 @@ class FILLMODE(Enum):
     LINE = 1
     CONTOUR = 3
 
+class JUSTIFY(Enum):
+    LEFT = 0
+    CENTER = 1
+    RIGHT = 2
+
 BOUNDS = [10300, 7650]
 UNITS_PER_mm = 1.0 / 0.025 #1 plotter unit == 0.025 mm
 UNITS_PER_INCH = 25.4 * UNITS_PER_mm
@@ -23,6 +28,11 @@ lineFillAngle = 0
 fillPen = None
 currentDrawSpeed = 40
 fillSpeed = 10
+fillSpacingCoef = 1.0
+fontName = None
+fontHeight_mm = 10.0
+fontJustify = JUSTIFY.LEFT
+fontKerning_mm = 0.0
 
 def init(penCarriage : easyplot.pen_definition.PenCarriage = easyplot.pen_definition.ALL_BLACK, carriageIndex = 3, startX = 0, startY = 0):
     global instructions, carriage
@@ -183,17 +193,6 @@ def rect(x, y, w, h):
 def square(x, y, s):
     rect(x, y, s, s)
 
-class JUSTIFY(Enum):
-    LEFT = 0
-    CENTER = 1
-    RIGHT = 2
-
-fillSpacingCoef = 1.0
-fontName = None
-fontHeight_mm = 10.0
-fontJustify = JUSTIFY.LEFT
-fontKerning_mm = 0.0
-
 def setFillMode(mode : FILLMODE, penSlotFill = None, lineAngle = 0, fillSpacing = 0.75, speed = fillSpeed):
     global fillMode, lineFillAngle, fillPen, fillSpacingCoef, fillSpeed
     fillPen = penSlotFill
@@ -211,6 +210,18 @@ def setFont(font = None, height_mm = 10.0, justification : JUSTIFY = JUSTIFY.LEF
 
 def _isTtf(font):
     return font is not None and (font.endswith(".ttf") or font.endswith(".otf"))
+
+def getCharSize(char):
+    global fontName
+    if _isTtf(fontName):
+        return easyplot.fonts.ttfCharSize(char, fontName, fontHeight_mm)
+    return easyplot.fonts.hersheyCharSize(char, fontName, fontHeight_mm)
+
+def getStringWidth(string):
+    global fontName
+    if _isTtf(fontName):
+        return easyplot.fonts.ttfTextWidth(string, fontName, fontHeight_mm, fontKerning_mm)
+    return easyplot.fonts.hersheyTextWidth(string, fontName, fontHeight_mm, fontKerning_mm)
 
 def text(s, x, y):
     h = fontHeight_mm * UNITS_PER_mm
