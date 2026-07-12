@@ -34,6 +34,12 @@ fontHeight_mm = 10.0
 fontJustify = JUSTIFY.LEFT
 fontKerning_mm = 0.0
 
+optSplitLayers = False
+optReduceLifts = True
+optLiftReductionTolerance = 3
+optLineAngleCombinationTolerance = (3.14 * 2) / 180
+optDedupe = False
+
 def init(penCarriage : easyplot.pen_definition.PenCarriage = easyplot.pen_definition.ALL_BLACK, carriageIndex = 3, startX = 0, startY = 0):
     global instructions, carriage
     carriage = penCarriage
@@ -72,6 +78,16 @@ def penDown():
 def penUp():
     global instructions
     instructions.append("PU;")
+
+def setOptimization(splitLayers=optSplitLayers, reduceLifts=optReduceLifts,
+    liftReductionTolerance=optLiftReductionTolerance,
+    lineAngleCombinationTolerance=optLineAngleCombinationTolerance,
+    dedupe = optDedupe):
+    optSplitLayers = splitLayers
+    optReduceLifts = reduceLifts
+    optLiftReductionTolerance = liftReductionTolerance
+    optlineAngleCombinationTolerance = lineAngleCombinationTolerance
+    optDedupe = dedupe
 
 def end(show = True, outputPath = "output.txt"):
     global instructions, carriage
