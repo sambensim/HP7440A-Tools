@@ -76,3 +76,7 @@ These tools are for generating HPGL from within python
 `from easyplot.plot_preview import preview`
 
 - `preview()` - ...
+
+## Examples
+
+...
