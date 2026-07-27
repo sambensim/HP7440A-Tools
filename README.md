@@ -76,6 +76,7 @@ These tools are for generating HPGL from within python
 `from easyplot.plot_preview import preview`
 
 - `preview()` - ...
+separate instrs into a python list first. Only supports one pair of coords per line rn :(
 
 ## Examples
 
