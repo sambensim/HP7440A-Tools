@@ -74,8 +74,6 @@ def penUp():
     global instructions
     instructions.append("PU;")
 
-import easyplot.rotatetemp
-
 def end(show = True, outputPath = "output.txt"):
     global instructions, carriage
     instructions.append("SP;")
