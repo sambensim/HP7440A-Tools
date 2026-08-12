@@ -33,6 +33,7 @@ fontName = None
 fontHeight_mm = 10.0
 fontJustify = JUSTIFY.LEFT
 fontKerning_mm = 0.0
+font_outline = True
 
 def init(penCarriage : easyplot.pen_definition.PenCarriage = easyplot.pen_definition.ALL_BLACK, carriageIndex = 3, startX = 0, startY = 0):
     global instructions, carriage
@@ -73,10 +74,13 @@ def penUp():
     global instructions
     instructions.append("PU;")
 
+import easyplot.rotatetemp
+
 def end(show = True, outputPath = "output.txt"):
     global instructions, carriage
     instructions.append("SP;")
     instructions = OVE(instructions, carriage)
+    # instructions = [(item+";") for item in easyplot.rotatetemp.rotate_hpgl("\n".join(instructions)).split(";")[:-1]]
     if len(instructions) != 0:
         with open(outputPath, "w") as f:
             f.write('\n'.join(instructions))
@@ -93,7 +97,6 @@ def line(x1, y1, x2, y2):
     penDown()
     set(x2, y2)
     penUp()
-
 
 def point(x, y):
     penUp()
@@ -134,7 +137,6 @@ def _estimateBezierLength(startx, starty, c1x, c1y, c2x, c2y, endx, endy):
         dist += math.hypot(x, y)
     return dist
 
-
 def _fillSpacing():
     global currentPenIndex
     if currentPenIndex not in carriage.getUsedSlots():
@@ -166,13 +168,13 @@ def _fillWith(boundary):
         global lineFillAngle
         _fillPolygon(boundary, None, lineFillAngle)
 
-def arc(x, y, r, rads, stepSize = 40):
+def arc(x, y, r, rads, rot = 0, stepSize = 40):
     rads = min(rads, 2 * math.pi)
     steps = max(round((rads * r) / stepSize), 16)
-    pts = [(x + r, y)]
+    pts = [(x + math.cos(rot) * r, y + math.sin(rot) * r)]
     for i in range(steps):
         p = ((i + 1) / steps)
-        pts.append((x + math.cos(p * rads) * r, y + math.sin(p * rads) * r))
+        pts.append((x + math.cos(p * rads + rot) * r, y + math.sin(p * rads + rot) * r))
     _fillWith(pts if rads >= 2 * math.pi else pts + [(x, y)])
     polyline(pts)
 
@@ -201,12 +203,13 @@ def setFillMode(mode : FILLMODE, penSlotFill = None, lineAngle = 0, fillSpacing 
     fillSpacingCoef = fillSpacing
     fillSpeed = speed
 
-def setFont(font = None, height_mm = 10.0, justification : JUSTIFY = JUSTIFY.LEFT, kerning_mm = 0.0):
-    global fontName, fontHeight_mm, fontJustify, fontKerning_mm
+def setFont(font = None, height_mm = 10.0, justification : JUSTIFY = JUSTIFY.LEFT, kerning_mm = 0.0, outline = True):
+    global fontName, fontHeight_mm, fontJustify, fontKerning_mm, font_outline
     fontName = font
     fontHeight_mm = height_mm
     fontJustify = justification
     fontKerning_mm = kerning_mm
+    font_outline = outline
 
 def _isTtf(font):
     return font is not None and (font.endswith(".ttf") or font.endswith(".otf"))
@@ -248,8 +251,9 @@ def text(s, x, y):
                 [[(x + px, y + py) for px, py in c] for c in glyph]))
         for boundary in boundaries:
             _fillWithGeom(boundary)
-        for outline in outlines:
-            polyline(outline)
+        if font_outline:
+            for outline in outlines:
+                polyline(outline)
     else:
         for pl in easyplot.fonts.hersheyPolylines(s, h, fontName, k, tolerance=tol):
             polyline([(x + px, y + py) for px, py in pl])
@@ -304,4 +308,4 @@ def regularPolygon(x, y, radius, sides, rotation = 0):
     for i in range(sides):
         theta = (((i + 1) * ((2 * math.pi) / sides) + rotation) / (2*math.pi))
         pts.append((x + math.cos(theta * 2 * math.pi) * radius, y + math.sin(theta * 2 * math.pi) * radius))
-    return [[int(v) for v in p] for p in pts]
+    polyline([[int(v) for v in p] for p in pts])
