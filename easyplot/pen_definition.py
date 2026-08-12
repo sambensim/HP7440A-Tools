@@ -24,8 +24,8 @@ MICRON_BLUE_05 = PenDefinition(16, 87, 156, 0.45)
 MICRON_GREEN_05 = PenDefinition(0, 255, 0, 0.45)
 MICRON_RED_05 = PenDefinition(255, 0, 0, 0.45)
 MICRON_PURPLE_05 = PenDefinition(61, 51, 93, 0.45)
-MICRON_ROSE_05 = PenDefinition(0, 0, 0, 0.45)
-MICRON_BROWN_05 = PenDefinition(0, 0, 0, 0.45)
+MICRON_ROSE_05 = PenDefinition(205, 81, 152, 0.45)
+MICRON_BROWN_05 = PenDefinition(181, 98, 65, 0.45)
 
 class PenCarriage:
     def __init__(self, penArray = [0, 0, 0, 0, 0, 0, 0, 0]):

@@ -41,7 +41,7 @@ def preview(instrs: list, carriage: easyplot.pen_definition.PenCarriage):
             if penDown:
                 line(cPos[0], cPos[1], nextPos[0], nextPos[1], arr, currentPen)
             cPos = nextPos
-    out = Image.fromarray(arr)
+    out = Image.fromarray(arr).transpose(Image.Transpose.FLIP_TOP_BOTTOM);
     out.show()
 
 def line(x1, y1, x2, y2, img, pen: easyplot.pen_definition.PenDefinition):
