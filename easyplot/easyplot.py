@@ -177,7 +177,7 @@ def arc(x, y, r, rads, rot = 0, stepSize = 40):
     polyline(pts)
 
 def circle(x, y, r, stepSize = 40):
-    arc(x, y, r, 2 * math.pi, stepSize)
+    arc(x, y, r, 2 * math.pi, stepSize = stepSize)
 
 def rect(x, y, w, h):
     _fillWith([(x, y), (x + w, y), (x + w, y + h), (x, y + h)])
